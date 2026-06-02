@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Kenya Tools Hub</title>
+  <title>Smart Tools Hub</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-  <div style="display:flex; justify-content:space-between; align-items:center;">
-    <h1 style="margin:0;">🇰🇪 Kenya Tools Hub</h1>
-    <span id="appVersion" style="font-size:18px; font-weight:bold; margin:0 5px; color:#666;"></span>
+  <div class="hero" style="display:flex; justify-content:space-between; align-items:center;">
+    <h1 style="margin-left:10px;">Smart Tools Hub</h1>
+    <span id="platformVersion" style="font-size:18px; font-weight:bold; margin-right:10px; color:#666;"></span>
   </div>
+  <p class="tagline"><strong>Business & Everyday Tools</strong> for Everyone</p>
+
 
   <nav>
     <button onclick="showTool('helb')">HELB Calculator</button>
     <button onclick="showTool('grade')">Grade Calculator</button>
+    <button onclick="showTool('vat')">VAT Calculator</button>
+    <button onclick="showTool('paye')">PAYE Calculator</button>
+    <button onclick="showTool('mpesa')">M-Pesa Charges Tool</button>
     <button onclick="showTool('invoice')">Invoice Generator</button>
+    <button onclick="showTool('receipt')">Receipt Generator</button>
   </nav>
 
   <!-- HELB -->
@@ -35,66 +40,285 @@
     <button onclick="calculateGrade()">Calculate</button>
     <p id="gradeResult"></p>
   </section>
-
-  <!-- Invoice -->
-  <section id="invoice" class="tool" style="display:none;">
-    <h2>Invoice Generator</h2>
-
-    <div id="customerDetails">
-      <input type="text" id="businessName" placeholder="Your Business Name">
-      <!-- COMPANY DETAILS -->
-      <input type="text" id="businessAddress" placeholder="Business Address">
-      <!-- LOGO -->
-      <label for="logoUpload">Upload Business Logo</label>
-      <input type="file" id="logoUpload" accept="image/*">
-      
-      <!-- DEFAULT LOGO PREVIEW -->
-      <img id="logoPreview" src="images/default-logo.jpeg" 
-           style="height:60px; margin-top:10px; display:block;">
-           
-      <!-- DUE DATE -->
-      <label for="dueDate">Due Date</label>
-      <input type="date" id="dueDate">
-
-      <!-- VAT -->
-      <input type="number" id="vatRate" placeholder="VAT % (e.g 16)">
-
-      <input type="text" id="customerName" placeholder="Customer Name">
-      <input type="text" id="contactInfo" placeholder="Phone or Email">
-    </div>
-    
-    <div>
-      <label for="currency">Currency</label>
   
-      <select id="currency">
-        <option value="KES">KES</option>
-        <option value="TZS">TZX</option>
-        <option value="UGX">UGX</option>
-        <option value="$">USD</option>
+    <!-- VAT CALCULATOR -->
+    <section id="vat" class="tool" style="display:none;">
+      <h2>VAT Calculator</h2>
+    
+      <select id="vatMode">
+        <option value="vatonly">VAT Only</option>
+        <option value="add">Add VAT</option>
+        <option value="remove">Remove VAT</option>
       </select>
-    </div>
     
-    <div id="itemsBought">
-      <input type="text" id="item" placeholder="Item Name">
-      <input type="number" id="quantity" placeholder="Quantity">
-      <input type="number" id="unitPrice" placeholder="Price per Unit">
-    </div>
+    <input id="amount" type="number" placeholder="Enter amount">
     
-    <button onclick="generateInvoice()">Add Item</button>
-    <input type="number" id="deleteIndex" placeholder="Enter item number to delete">
-    <button onclick="deleteItem()">Delete Item</button>
+    <input id="vatCalcRate" type="number" value="16">
     
-    <div id="invoicePreview" style="display:none;">
-      <div id="previewContent"></div>
-    </div>
-
-    <ul id="invoiceList"></ul>
-    <h3 id="total"></h3>
-    <button onclick="previewInvoice()">Preview Invoice</button>
-    <button onclick="printInvoice()">Print Invoice</button>
+    <button onclick="calculateVAT()">
+      Calculate
+    </button>
+    
+    <p id="vatResult"></p>
   </section>
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- PAYE Calculator -->
+  <section id="paye" class="tool" style="display:none;">
+    <h2>PAYE Calculator</h2>
+    
+    <input
+    id="grossSalary"
+    type="number"
+    placeholder="Monthly Gross Salary"
+    />
+    
+    <button onclick="calculatePAYE()">
+      Calculate PAYE
+    </button>
+    
+    <p id="payeResult"></p>
+  </section>
+  
+  
+  <!-- M-PESA CHARGES TOOL -->
+  <section id="mpesa" class="tool" style="display:none;">
+    <h2>M-Pesa Charges Calculator</h2>
+    
+    <select id="mpesaMode" style="width:185px;">
+      <option value="send">Send Money</option>
+      <option value="withdraw">Withdrawal</option>
+      <option value="receive">Receive X (Reverse)</option>
+      <option value="buygoods">Buy Goods (Till)</option>
+      <option value="limits">Transaction Limits</option>
+    </select>
+    
+    <input id="mpesaAmount" type="number" placeholder="Enter amount">
+    
+    <button onclick="calculateMpesa()">
+      Calculate
+    </button>
+    
+    <p id="mpesaResult"></p>
+  </section>
+  
+
+<!-- ================= INVOICE ================= -->
+<section id="invoice" class="tool" style="display:none;">
+
+  <h2>Invoice Generator</h2>
+
+  <div id="customerDetails">
+
+    <input type="text"
+           id="businessName"
+           placeholder="Your Business Name">
+
+    <input type="text"
+           id="businessAddress"
+           placeholder="Business Address">
+
+    <label for="logoUpload">
+      Upload Business Logo
+    </label>
+
+    <input type="file"
+           id="logoUpload"
+           accept="image/*">
+
+    <img id="logoPreview"
+         src="images/default-logo.jpeg"
+         style="height:60px;margin-top:10px;display:block;">
+
+    <label for="dueDate"
+           style="font-size:20px;">
+      Due Date
+    </label>
+
+    <input type="date"
+           id="dueDate"
+           style="background:white;">
+
+    <input type="number"
+           id="vatRate"
+           placeholder="VAT % (e.g 16)">
+
+    <input type="text"
+           id="customerName"
+           placeholder="Customer Name">
+
+    <input type="text"
+           id="contactInfo"
+           placeholder="Phone or Email">
+
+  </div>
+
+  <div>
+
+    <label for="currency"
+           style="font-size:20px;">
+      Currency
+    </label>
+
+    <select id="currency">
+      <option value="KES">KES</option>
+      <option value="TZS">TZS</option>
+      <option value="UGX">UGX</option>
+      <option value="$">USD</option>
+    </select>
+
+  </div>
+
+  <div id="itemsBought">
+
+    <input type="text"
+           id="item"
+           placeholder="Item Name">
+
+    <input type="number"
+           id="quantity"
+           placeholder="Quantity">
+
+    <input type="number"
+           id="unitPrice"
+           placeholder="Price per Unit">
+
+  </div>
+
+  <button onclick="generateInvoice()">
+    Add Item
+  </button>
+
+  <input type="number"
+         id="deleteIndex"
+         placeholder="Enter item number to delete">
+
+  <button onclick="deleteItem()">
+    Delete Item
+  </button>
+
+  <ul id="invoiceList"></ul>
+
+  <h3 id="total"></h3>
+
+  <button onclick="previewInvoice()">
+    Preview
+  </button>
+
+  <button onclick="printInvoice()">
+    Print
+  </button>
+
+  <button onclick="downloadInvoice()">
+    PDF
+  </button>
+
+  <button onclick="downloadInvoiceImage()">
+    Download Image
+  </button>
+
+  <button onclick="smartShareInvoice()">
+    Share
+  </button>
+
+</section>
+
+
+
+<!-- ================= RECEIPT ================= -->
+<section id="receipt" class="tool" style="display:none;">
+
+  <h2>Receipt Generator</h2>
+
+  <select id="receiptMode">
+    <option value="a4">A4 Receipt</option>
+    <option value="thermal">Thermal Receipt</option>
+  </select>
+
+  <input type="file" id="receiptLogo" accept="image/*">
+  <img id="receiptLogoPreview" style="height:50px;display:block;">
+
+  <input id="receiptBusiness" placeholder="Business Name">
+  <input id="receiptAddress" placeholder="Business Address">
+  <input id="receiptTel" placeholder="Business Telephone">
+  <input id="receiptEmail" placeholder="Business Email">
+         
+         
+
+  <input id="receiptCustomer"
+         placeholder="Customer Name">
+
+  <select id="paymentMethod">
+    <option value="Cash">Cash</option>
+    <option value="M-Pesa">M-Pesa</option>
+    <option value="Card">Card</option>
+  </select>
+
+  <div>
+
+    <label for="recCurrency"
+           style="font-size:20px;">
+      Currency
+    </label>
+
+    <select id="recCurrency">
+      <option value="KES">KES</option>
+      <option value="TZS">TZS</option>
+      <option value="UGX">UGX</option>
+      <option value="$">USD</option>
+    </select>
+
+  </div>
+  <input id="receiptCode"
+         placeholder="Code">
+
+  <input id="receiptItem"
+         placeholder="Item">
+
+  <input id="receiptQuantity"
+         type="number"
+         placeholder="Quantity">
+
+  <input id="receiptUnitPrice"
+         type="number"
+         placeholder="Unit Price">
+
+  <button onclick="addReceiptItem()">
+    Add Item
+  </button>
+
+  <ul id="receiptList"></ul>
+
+  <h3 id="receiptTotal">
+    Total: 0.00
+  </h3>
+
+  <p id="receiptStatus"></p>
+
+  <button onclick="previewReceipt()">
+    Preview
+  </button>
+
+  <button onclick="printReceipt()">
+    Print
+  </button>
+
+  <button onclick="downloadReceipt()">
+    PDF
+  </button>
+
+  <button onclick="downloadReceiptImage()">
+    Download Image
+  </button>
+
+  <button onclick="smartShareReceipt()">
+    Share
+  </button>
+
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
