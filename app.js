@@ -1,5 +1,3 @@
-const BASE_URL = "https://receipt-backend-kdwk.onrender.com";
-  
 // ================= NAVIGATION =================
 function showTool(tool) {
   document.querySelectorAll(".tool").forEach(tool => {
