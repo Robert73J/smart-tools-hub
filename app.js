@@ -41,14 +41,6 @@ function generateInvoiceNumber() {
   return `INV-${year}-${random}`;
 }
 
-function formatDate() {
-  let d = new Date();
-  let day = String(d.getDate()).padStart(2, '0');
-  let month = String(d.getMonth() + 1).padStart(2, '0');
-  let year = d.getFullYear();
-  return `${day}/${month}/${year}`;
-}
-
 function getCurrency() {
   return document.getElementById("currency")?.value || "KES";
 }
@@ -59,14 +51,6 @@ function getCurrency_1() {
 
 function formatMoney(amount) {
   return getCurrency() + " " +
-    Number(amount).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-}
-
-function formatMoney_1(amount) {
-  return getCurrency_1() + " " +
     Number(amount).toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2
@@ -361,7 +345,6 @@ function calculateMpesa() {
 
 const PLATFORM_VERSION = "v1.6";
 const INVOICE_VERSION = "v1.5";
-const RECEIPT_VERSION = "v1.1";
 
 // ================= INVOICE =================
 
@@ -1129,194 +1112,6 @@ async function saveReceiptToBackend(status = "DRAFT") {
     });
   }
 
-function receiptHTML(logoDataURL=null){
-  if (backendVAT === null || backendTotal === null) {
-    throw new Error("Backend totals not available. Save receipt first.");
-  }
-  let vatAmount = backendVAT;
-  let total = backendTotal;
-
-  let mode =
-    document.getElementById("receiptMode").value;
-
-  let business =
-    document.getElementById("receiptBusiness").value ||
-    "Business Name";
-
-  let payment =
-    document.getElementById("paymentMethod").value;
-
-  let vatRate = 16;
-
-  let rows = receiptItems.map(item => {
-    return `
-      <div class="thermal-row">
-
-        <!-- ITEM + CODE stacked -->
-        <span>
-          ${item.item}
-          ${item.code ? `<div class="thermal-small">${item.code}</div>` : ""}
-        </span>
-
-        <span>${item.qty}</span>
-        <span>${item.unitPrice.toFixed(2)}</span>
-        <span>${item.amount.toFixed(2)}</span>
-
-      </div>
-    `;
-    
-  }).join("");
-
-  if (mode === "thermal") {
-  
-    return `
-      <div class="thermal-container">
-      
-         <div class="thermal-header">
-
-         ${ receiptLogoData ? `
-             <img
-                src="${logoDataURL || receiptLogoData || 'images/default-logo.jpeg'}"
-                style="height:45px; width:45px; margin-right:5px; display:block; object-fit:contain; border-radius:50px;"
-             >
-          ` : "" }
-
-        
-          <div class="thermal-business">
-            <div class="thermal-bold">${business}</div>
-            <div class="thermal-small">${document.getElementById("receiptAddress")?.value || ""}</div>
-            <div class="thermal-small">${document.getElementById("receiptTel")?.value || ""}</div>
-            <div class="thermal-small">${document.getElementById("receiptEmail")?.value || ""}</div>
-          </div>
-        </div>
-        <p>Customer: ${document.getElementById("receiptCustomer").value || "-"}</p>
-  
-        <div class="pin thermal-small">
-          PIN: P051234567X
-        </div>
-  
-        <div class="thermal-divider"></div>
-  
-        <div>
-          Receipt:
-          ${currentReceiptNumber}
-        </div>
-  
-        <div>
-          Date:
-          ${formatDate()}
-        </div>
-  
-        <div>
-          Payment:
-          ${payment}
-        </div>
-        
-        <div class="thermal-divider"></div>
-        
-        <div class="thermal-row thermal-bold">
-          <span>ITEM</span>
-          <span>QTY</span>
-          <span>PRICE</span>
-          <span>AMOUNT</span>
-        </div>
-  
-        ${rows}
-  
-        <div class="thermal-divider"></div>
-  
-        <div class="thermal-row total-row">
-          <span>VAT</span>
-          <span>${formatMoney_1(vatAmount)}</span>
-        </div>
-        
-        <div class="thermal-row total-row thermal-bold">
-          <span>TOTAL</span>
-          <span>${formatMoney_1(total)}</span>
-        </div>
-  
-        <div class="thermal-divider"></div>
-
-        <div class="thermal-center">
-          <div id="qrcode"></div>   <!-- NOT svg -->
-        </div>
-        
-        <div class="thermal-center thermal-small">
-          Scan to view receipt
-        </div>
-        
-        <div class="thermal-divider"></div>
-        
-        <div class="thermal-center">
-          Thank You
-        </div>
-  
-      </div>
-      `;
-} else {
-
-  return `
-  <div class="receipt-container">
-
-    ${receiptLogoData ? `
-       <img
-          src="${logoDataURL || receiptLogoData || 'images/default-logo.jpeg'}"
-          style="height:60px; width:60px; display:block; object-fit:contain; border-radius:6px;"
-       >
-    ` : "" }
-  
-    <h1>RECEIPT</h1>
-
-    <h2>${business}</h2>
-
-    <p>
-      Receipt:
-      ${currentReceiptNumber}
-    </p>
-
-    <table>
-
-      <tr>
-        <th>Item</th>
-        <th>Qty</th>
-        <th>Amount</th>
-      </tr>
-
-      ${receiptItems.map(item=>`
-
-      <tr>
-        <td>${item.item}</td>
-        <td>${item.qty}</td>
-        <td>${item.amount.toFixed(2)}</td>
-      </tr>
-
-      `).join("")}
-
-    </table>
-
-    <h3>
-      VAT:
-     ${formatMoney_1(vatAmount)}
-    </h3>
-
-    <h2>
-      Total:
-
-      ${formatMoney_1(total)}
-    </h2>
-    
-    <!-- FOOTER -->
-    <div class="footer">
-      Thank you for your business!<br>
-      <span style="font-size:9px;">
-        Generated by Kenya Tools Hub • ${RECEIPT_VERSION}
-      </span>
-    </div>
-
-  </div>
-  `;
-}
-}
 
 async function previewReceipt() {
   
