@@ -1,49 +1,51 @@
-const params =
-new URLSearchParams(window.location.search);
+const params = new URLSearchParams(window.location.search);
+const receiptNo = params.get("receipt");
 
-const receiptNo =
-params.get("receipt");
+const container = document.getElementById("receipt");
 
 if (!receiptNo) {
-    document.getElementById("receipt").innerHTML =
-        "<h2>No receipt number provided.</h2>";
+  container.innerHTML = "<h2>No receipt number provided.</h2>";
 } else {
-    loadReceipt();
+  loadReceipt();
 }
 
 function renderReceipt(receipt) {
-    document.getElementById("receipt").innerHTML =
-        receiptHTMLFromServer(receipt);
+  try {
+    container.innerHTML = receiptHTMLFromServer(receipt);
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = "<h2>Error rendering receipt</h2>";
+  }
 }
 
 async function loadReceipt() {
+  try {
+    container.innerHTML = "<p>Loading receipt...</p>";
+
+    const res = await fetch(
+      `${BASE_URL}/receipt/${encodeURIComponent(receiptNo)}`
+    );
+
+    const text = await res.text();
+
+    let receipt;
 
     try {
-        const res = await fetch(
-            `${BASE_URL}/receipt/${encodeURIComponent(receiptNo)}`
-        );
-
-        if (!res.ok) {
-
-            document.getElementById("receipt").innerHTML =
-                "<h2>Receipt not found</h2>";
-
-            return;
-        }
-
-        const receipt = await res.json();
-
-        renderReceipt(receipt);
-
+      receipt = JSON.parse(text);
+    } catch {
+      console.error("Invalid JSON:", text);
+      container.innerHTML = "<h2>Invalid server response</h2>";
+      return;
     }
 
-    catch (err) {
-
-        console.error(err);
-
-        document.getElementById("receipt").innerHTML =
-            "<h2>Error loading receipt</h2>";
-
+    if (!res.ok) {
+      container.innerHTML = "<h2>Receipt not found</h2>";
+      return;
     }
 
+    renderReceipt(receipt);
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = "<h2>Error loading receipt</h2>";
+  }
 }
