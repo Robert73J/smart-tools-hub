@@ -285,7 +285,7 @@ function receiptHTMLFromServer(receipt) {
         <div class="thermal-divider"></div>
 
         <div class="thermal-center">
-          ${ receipt.qrurl ? `<img src="${receipt.qrurl}" width="120" height="120" alt="Receipt QR Code">` : "" }
+          ${ receipt.qrUrl ? `<img src="${receipt.qrUrl}" width="120" height="120" alt="Receipt QR Code">` : "" }
         </div>
         
         <div class="thermal-center thermal-small">

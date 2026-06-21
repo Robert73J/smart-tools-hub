@@ -1062,13 +1062,14 @@ function renderReceipt(){
 async function saveReceiptToBackend(status = "DRAFT") {
   receiptStatus = status;
   
+  const safeItems = Array.isArray(receiptItems) ? receiptItems : [];
+  
   const data = {
     receiptNo: currentReceiptNumber,
     business: document.getElementById("receiptBusiness").value,
     customer: document.getElementById("receiptCustomer").value,
     
-    // 🔒 send only safe fields
-    items: receiptItems.map(i => ({
+    items: safeItems.map(i => ({
       item: i.item,
       qty: i.qty,
       unitPrice: i.unitPrice
@@ -1077,19 +1078,23 @@ async function saveReceiptToBackend(status = "DRAFT") {
     status
   };
   
+  console.log("Sending payload:", data);
+  
   const res = await fetch(`${BASE_URL}/receipt`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   });
   
-  const result = await res.json();
+  const text = await res.text();
+  console.log("RAW RESPONSE:", text);
+  
+  const result = JSON.parse(text);
   
   if (!res.ok) {
     throw new Error(result.message || "Failed to save receipt");
   }
-    
-  // ✅ STORE BACKEND VALUES
+  
   backendVAT = result.vat;
   backendTotal = result.total;
   
