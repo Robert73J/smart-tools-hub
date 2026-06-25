@@ -1104,7 +1104,8 @@ async function saveReceiptToBackend(status = "DRAFT") {
   function generateQRCode(element, receiptNumber) {
     return new Promise((resolve) => {
       //const qrData = `${window.location.origin}/receipt/${receiptNumber}`;
-      const qrData = `${BASE_URL}/receipt/${currentReceiptNumber}`;
+      const qrData =
+  `https://robert73j.github.io/smart-tools-hub/receipt.html?receipt=${encodeURIComponent(currentReceiptNumber)}`;
       const canvas = document.createElement("canvas");
       
       QRCode.toCanvas(canvas, qrData, { width: 120 }, () => {
