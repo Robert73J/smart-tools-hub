@@ -1144,7 +1144,7 @@ async function previewReceipt() {
 
     <script>
       window.onload = function() {
-        const qrData = "${BASE_URL}/receipt/${currentReceiptNumber}";
+        const qrData = "https://robert73j.github.io/smart-tools-hub/receipt.html?receipt=${currentReceiptNumber}";
 
         const canvas = document.createElement("canvas");
 
@@ -1195,7 +1195,7 @@ async function printReceipt() {
 
   <script>
     window.onload = function() {
-      const qrData = "${BASE_URL}/receipt/${currentReceiptNumber}";
+      const qrData = "https://robert73j.github.io/smart-tools-hub/receipt.html?receipt=${currentReceiptNumber}";
       
       const canvas = document.createElement("canvas");
 
