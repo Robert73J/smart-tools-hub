@@ -43,9 +43,11 @@ function getCurrency() {
   return document.getElementById("currency")?.value || "KES";
 }
 
+/*
 function getCurrency_1() {
   return document.getElementById("recCurrency")?.value || "KES";
 }
+*/
 
 function formatMoney(amount) {
   return getCurrency() + " " +

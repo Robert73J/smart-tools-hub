@@ -22,7 +22,7 @@ function renderReceipt(receipt) {
 
 function renderReceipt(receipt) {
   console.log("RECEIPT DATA:", receipt);
-
+  
   try {
     container.innerHTML = receiptHTMLFromServer(receipt);
   } catch (err) {

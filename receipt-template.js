@@ -187,6 +187,8 @@ function receiptHTML(logoDataURL=null){
 
 
 function receiptHTMLFromServer(receipt) {
+  window.currentCurrency = receipt.currency || "KES";
+  
   if (receipt.vat == null || receipt.total == null) {
     throw new Error("Backend totals not available. Save receipt first.");
   }
@@ -375,6 +377,12 @@ function formatDate(date = new Date()) {
   const year = d.getFullYear();
   
   return `${day}/${month}/${year}`;
+}
+
+function getCurrency_1() {
+  return document.getElementById("recCurrency")?.value ||
+    window.currentCurrency ||
+    "KES";
 }
 
 function formatMoney_1(amount) {
