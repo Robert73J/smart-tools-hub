@@ -9,12 +9,26 @@ if (!receiptNo) {
   loadReceipt();
 }
 
+/*
 function renderReceipt(receipt) {
   try {
     container.innerHTML = receiptHTMLFromServer(receipt);
   } catch (err) {
     console.error(err);
     container.innerHTML = "<h2>Error rendering receipt</h2>";
+  }
+}
+*/
+
+function renderReceipt(receipt) {
+  console.log("RECEIPT DATA:", receipt);
+
+  try {
+    container.innerHTML = receiptHTMLFromServer(receipt);
+  } catch (err) {
+    console.error("RENDER ERROR:", err);
+    container.innerHTML =
+      "<pre>" + err.stack + "</pre>";
   }
 }
 
