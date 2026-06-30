@@ -969,9 +969,19 @@ let receiptItems = [];
 let receiptTotal = 0;
 let receiptStatus = "DRAFT"; // default
 
-function generateReceiptNumber(){
-  return `REC-${Date.now()}-${Math.floor(Math.random()*1000)}`;
-  }
+function generateReceiptNumber() {
+  const now = new Date();
+  
+  const y = now.getFullYear();
+  
+  const m = String(now.getMonth() + 1).padStart(2, "0");
+  
+  const d = String(now.getDate()).padStart(2, "0");
+  
+  const random = Math.floor(1000 + Math.random() * 9000);
+  
+  return `REC-${y}${m}${d}-${random}`;
+}
 
 let currentReceiptNumber =
   generateReceiptNumber();
@@ -1060,23 +1070,6 @@ function renderReceipt(){
     "Total: " +
     formatMoney_1(receiptTotal);
 }
-
-
-function renderReceipt(receipt) {
-  console.log("RECEIPT DATA:", receipt);
-  
-  try {
-    container.innerHTML =
-      receiptHTMLFromServer(receipt);
-  }
-  catch (err) {
-    console.error("RENDER ERROR:", err);
-    
-    container.innerHTML =
-      "<pre>" + err.stack + "</pre>";
-  }
-}
-
 
 async function saveReceiptToBackend(status = "DRAFT") {
   receiptStatus = status;
