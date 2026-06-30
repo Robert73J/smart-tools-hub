@@ -61,13 +61,13 @@ function receiptHTML(logoDataURL=null){
         <p>Customer: ${document.getElementById("receiptCustomer").value || "-"}</p>
   
         <div class="pin thermal-small">
-          PIN: ${receipt.pin || ""}
+          PIN: ${document.getElementById("receiptPin")?.value || ""}
         </div>
   
         <div class="thermal-divider"></div>
   
         <div>
-          Receipt No: ${receipt.receiptno}
+          Receipt No: ${currentReceiptNumber}
         </div>
   
         <div>
@@ -138,7 +138,7 @@ function receiptHTML(logoDataURL=null){
     <h2>${business}</h2>
 
     <p>
-      Receipt No: ${receipt.receiptno}
+      Receipt No: ${currentReceiptNumber}
     </p>
 
     <table>

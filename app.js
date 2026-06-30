@@ -1061,24 +1061,65 @@ function renderReceipt(){
     formatMoney_1(receiptTotal);
 }
 
+
+function renderReceipt(receipt) {
+  console.log("RECEIPT DATA:", receipt);
+  
+  try {
+    container.innerHTML =
+      receiptHTMLFromServer(receipt);
+  }
+  catch (err) {
+    console.error("RENDER ERROR:", err);
+    
+    container.innerHTML =
+      "<pre>" + err.stack + "</pre>";
+  }
+}
+
+
 async function saveReceiptToBackend(status = "DRAFT") {
   receiptStatus = status;
   
   const safeItems = Array.isArray(receiptItems) ? receiptItems : [];
   
   const data = {
-    receiptNo: currentReceiptNumber,
-    business: document.getElementById("receiptBusiness").value,
-    customer: document.getElementById("receiptCustomer").value,
-    
-    items: safeItems.map(i => ({
-      item: i.item,
-      qty: i.qty,
-      unitPrice: i.unitPrice
-    })),
-    
-    status
-  };
+  receiptNo: currentReceiptNumber,
+
+  business: document.getElementById("receiptBusiness").value,
+  customer: document.getElementById("receiptCustomer").value,
+
+  logo: receiptLogoData || "",
+
+  phone: document.getElementById("receiptTel").value,
+
+  address: document.getElementById("receiptAddress").value,
+
+  email: document.getElementById("receiptEmail").value,
+
+  pin: document.getElementById("receiptPin").value,
+
+  currency: getCurrency_1(),
+
+  paymentMethod:
+    document.getElementById("paymentMethod").value,
+
+  receiptMode:
+    document.getElementById("receiptMode").value,
+
+  receiptDate: new Date().toISOString(),
+
+  qrUrl:
+    `https://robert73j.github.io/smart-tools-hub/receipt.html?receipt=${encodeURIComponent(currentReceiptNumber)}`,
+
+  items: safeItems.map(i => ({
+    item: i.item,
+    qty: i.qty,
+    unitPrice: i.unitPrice
+  })),
+
+  status
+};
   
   console.log("Sending payload:", data);
   
