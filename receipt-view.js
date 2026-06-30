@@ -46,6 +46,7 @@ async function loadReceipt() {
 
     try {
       receipt = JSON.parse(text);
+      console.log(receipt);
     } catch {
       console.error("Invalid JSON:", text);
       container.innerHTML = "<h2>Invalid server response</h2>";
